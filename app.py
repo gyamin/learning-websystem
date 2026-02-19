@@ -37,4 +37,41 @@ def get_greeting(request: Request, name: str = "誰か"):
         "greeting.html", {'request': request, 'data': view_data})
     return response
 
+@router.get("/api/users", response_class=JSONResponse)
+def get_api_users(request: Request, name: str = None):
+    users_list = [
+        {"name": "三浦", "email": "miura@local", "user_type": 1},
+        {"name": "坂本", "email": "sakamoto@local", "user_type": 1},
+        {"name": "高木", "email": "takagi@local", "user_type": 1},
+        {"name": "高梨", "email": "takanashi@local", "user_type": 2},
+        {"name": "木原", "email": "kihara@local", "user_type": 2},
+    ]
+
+    if name:
+        response_list = [user for user in users_list if user['name'] == name]
+    else:
+        response_list = users_list
+
+    return JSONResponse(response_list)
+
+@router.get("/web/users", response_class=HTMLResponse)
+def get_web_users(request: Request, name: str = None, response_class=HTMLResponse):
+    users_list = [
+        {"name": "三浦", "email": "miura@local", "user_type": 1},
+        {"name": "坂本", "email": "sakamoto@local", "user_type": 1},
+        {"name": "高木", "email": "takagi@local", "user_type": 1},
+        {"name": "高梨", "email": "takanashi@local", "user_type": 2},
+        {"name": "木原", "email": "kihara@local", "user_type": 2},
+    ]
+
+    if name:
+        response_list = [user for user in users_list if user['name'] == name]
+    else:
+        response_list = users_list
+
+    view_data = {'users': response_list}
+
+    response = templates.TemplateResponse(
+        "users.html", {'request': request, 'data': view_data})
+    return response
 app.include_router(router)

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ユーザ一覧</title>
+</head>
+<body>
+<h1>ユーザ一覧</h1>
+<div>
+    <table>
+        <tr>
+            <th>名前</th>
+            <th>メールアドレス</th>
+        </tr>
+        {% for user in data.users %}
+        <tr>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+<style>
+    table {
+        border-collapse: collapse;
+    }
+    th {
+        background-color: #bababa;
+    }
+    th, td {
+        border: 1px solid #999;
+        padding: 8px;
+    }
+</style>
+</html>

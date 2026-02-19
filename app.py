@@ -10,7 +10,7 @@ router = APIRouter()
 # テンプレートエンジン設定
 templates = Jinja2Templates(directory="templates")
 
-@router.get("/", tags=["webpage"], response_class=HTMLResponse)
+@router.get("/", response_class=HTMLResponse)
 def get_root(request: Request):
     now = datetime.datetime.now()
     week_list = ["月", "火", "水", "木", "金", "土", "日"]
@@ -28,7 +28,7 @@ def get_root(request: Request):
     """
     return response
 
-@router.get("/greeting", tags=["webpage"], response_class=HTMLResponse)
+@router.get("/greeting", response_class=HTMLResponse)
 def get_greeting(request: Request, name: str = "誰か"):
     greeting = f'こんにちは {name} さん'
     now = datetime.datetime.now()

@@ -1,0 +1,27 @@
+[
+    {
+        "name": "三浦",
+        "email": "miura@local",
+        "user_type": 1
+    },
+    {
+        "name": "坂本",
+        "email": "sakamoto@local",
+        "user_type": 1
+    },
+    {
+        "name": "高木",
+        "email": "takagi@local",
+        "user_type": 1
+    },
+    {
+        "name": "高梨",
+        "email": "takanashi@local",
+        "user_type": 2
+    },
+    {
+        "name": "木原",
+        "email": "kihara@local",
+        "user_type": 2
+    }
+]

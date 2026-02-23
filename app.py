@@ -85,20 +85,25 @@ def get_user_new(request: Request):
     return response
 
 
-@router.post("/web/user", response_class=RedirectResponse)
-def create_user(name: str = Form(...), email: str = Form(...), user_type: int = Form(...)):
+@router.post("/web/user", response_class=HTMLResponse)
+def create_user(request: Request, name: str = Form(...), email: str = Form(...), user_type: int = Form(...)):
     users_json_path = Path("files") / "users.json"
     with users_json_path.open("r", encoding="utf-8") as f:
         users_list = json.load(f)
 
-    users_list.append({
+    add_user = {
         "name": name,
         "email": email,
         "user_type": user_type
-    })
+    }
+
+    users_list.append(add_user)
 
     with users_json_path.open("w", encoding="utf-8") as f:
         json.dump(users_list, f, ensure_ascii=False, indent=4)
 
-    return RedirectResponse(url="/web/users", status_code=303)
+    response = templates.TemplateResponse(
+        "user_created.html", {'request': request, 'user': add_user})
+    return response
+
 app.include_router(router)

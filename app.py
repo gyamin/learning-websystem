@@ -114,11 +114,12 @@ def get_notifications(request: Request):
     notifications = []
 
     sql = """
-        SELECT 
-            notification_status,
-            title,
-            created_at
-        FROM notifications
+          SELECT notification_status,
+                 title,
+                 publication_start_date,
+                 publication_end_date,
+                 created_at
+          FROM notifications
         """
 
     with engine.begin() as conn:
@@ -129,6 +130,63 @@ def get_notifications(request: Request):
 
     response = templates.TemplateResponse(
         "notifications.html", {'request': request, 'notifications': notifications})
+    return response
+
+@router.get("/web2/notifications", response_class=HTMLResponse)
+def get_notifications2(request: Request, title: str | None = None):
+    notifications = []
+
+    sql = """
+          SELECT notification_status,
+                 title,
+                 publication_start_date,
+                 publication_end_date,
+                 created_at
+          FROM notifications
+        """
+
+    if title:
+        sql += f" WHERE title LIKE :title"
+
+    with engine.begin() as conn:
+        rs = conn.execute(text(sql), {'title': f'%{title}%'})
+
+        if rs:
+            notifications = [dict(row._mapping) for row in rs]
+
+    response = templates.TemplateResponse(
+        "notifications.html", {'request': request, 'notifications': notifications})
+    return response
+
+
+@router.get("/web/notification/{notification_id}", response_class=HTMLResponse)
+def get_notifications(request: Request, notification_id: int):
+    notification = {}
+
+    sql = """
+        SELECT 
+            title,
+            content_body,
+            publication_start_date,
+            publication_end_date,
+            detail_image_path,
+            link_url,
+            created_at
+        FROM notifications
+        WHERE id = :notification_id
+        """
+
+    with engine.begin() as conn:
+        rs = conn.execute(text(sql), {'notification_id': notification_id})
+
+        row = rs.fetchone()
+        if row:
+            notification = dict( row._mapping)
+        else:
+            return templates.TemplateResponse("error_404.html", {'request': request}, status_code=404)
+
+    response = templates.TemplateResponse(
+        "notification_detail.html", {'request': request, 'notification': notification})
     return response
 
 

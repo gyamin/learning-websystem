@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS users
 COMMENT ON TABLE users IS 'ユーザ';
 COMMENT ON COLUMN users.id IS 'ID';
 COMMENT ON COLUMN users.user_code IS 'ユーザコード';
-COMMENT ON COLUMN users.tokein IS 'トークン';
+COMMENT ON COLUMN users.token IS 'トークン';
 COMMENT ON COLUMN users.card_code IS 'カード会社コード';
 COMMENT ON COLUMN users.card_brand IS 'カードブランド';
 COMMENT ON COLUMN users.card_grade IS 'カードグレード';
@@ -40,8 +40,8 @@ CREATE TABLE IF NOT EXISTS notifications
     title                  text                 DEFAULT NULL,
     content_body           text                 DEFAULT NULL,
     link_url               text                 DEFAULT NULL,
-    publication_start_date bigint               DEFAULT NULL,
-    publication_end_date   bigint               DEFAULT NULL,
+    publication_start_date timestamp            DEFAULT NULL,
+    publication_end_date   timestamp            DEFAULT NULL,
     action                 varchar(6)  NOT NULL DEFAULT 'detail',
     open_by                varchar(7)  NOT NULL DEFAULT 'webview',
     is_visible             bool        NOT NULL default true,

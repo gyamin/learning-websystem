@@ -1,0 +1,12 @@
+services:
+  lw_postgres :
+    image: postgres:16
+    container_name: lw_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: lwuser
+      POSTGRES_PASSWORD: 7ubtZX1WuggN
+      POSTGRES_DB: practice
+      TZ: "Asia/Tokyo"
+    ports:
+      - "15450:5432"

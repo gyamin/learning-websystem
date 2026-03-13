@@ -1,10 +1,11 @@
 from fastapi import FastAPI, Request, APIRouter, Form
 from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from sqlalchemy.sql import text
 import datetime
 import json
 from pathlib import Path
-
+from database_connecter import engine
 
 app = FastAPI()
 
@@ -12,6 +13,7 @@ router = APIRouter()
 
 # テンプレートエンジン設定
 templates = Jinja2Templates(directory="templates")
+
 
 @router.get("/", response_class=HTMLResponse)
 def get_root(request: Request):
@@ -25,7 +27,7 @@ def get_root(request: Request):
         <title>ルートページ</title>
     </head>
     <body>
-        <p>只今、{ now.strftime(f'%Y/%m/%d ({day_of_week}) %H:%M:%S') } です。</p>
+        <p>只今、{now.strftime(f'%Y/%m/%d ({day_of_week}) %H:%M:%S')} です。</p>
     </body>
     </html>
     """
@@ -57,6 +59,7 @@ def get_api_users(request: Request, name: str = None):
 
     return JSONResponse(response_list)
 
+
 @router.get("/web/users", response_class=HTMLResponse)
 def get_web_users(request: Request, name: str = None):
     # users.json からuser一覧を取得
@@ -79,7 +82,6 @@ def get_web_users(request: Request, name: str = None):
 
 @router.get("/web/user/new", response_class=HTMLResponse)
 def get_user_new(request: Request):
-
     response = templates.TemplateResponse(
         "user_new.html", {'request': request})
     return response
@@ -105,5 +107,29 @@ def create_user(request: Request, name: str = Form(...), email: str = Form(...),
     response = templates.TemplateResponse(
         "user_created.html", {'request': request, 'user': add_user})
     return response
+
+
+@router.get("/web/notifications", response_class=HTMLResponse)
+def get_notifications(request: Request):
+    notifications = []
+
+    sql = """
+        SELECT 
+            notification_status,
+            title,
+            created_at
+        FROM notifications
+        """
+
+    with engine.begin() as conn:
+        rs = conn.execute(text(sql))
+
+        if rs:
+            notifications = [dict(row._mapping) for row in rs]
+
+    response = templates.TemplateResponse(
+        "notifications.html", {'request': request, 'notifications': notifications})
+    return response
+
 
 app.include_router(router)

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>お知らせ一覧</title>
+</head>
+<body>
+<h1>お知らせ一覧</h1>
+<div>
+    <table>
+        <tr>
+            <th>ステータス</th>
+            <th>タイトル</th>
+            <th>作成日時</th>
+        </tr>
+        {% for notification in notifications %}
+        <tr>
+            <td>{{ notification.notification_status }}</td>
+            <td>{{ notification.title }}</td>
+            <td>{{ notification.created_at }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+<style>
+    table {
+        border-collapse: collapse;
+    }
+    th {
+        background-color: #bababa;
+    }
+    th, td {
+        border: 1px solid #999;
+        padding: 8px;
+    }
+</style>
+</html>

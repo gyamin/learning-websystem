@@ -126,3 +126,20 @@ INSERT INTO notifications (
         false,
         NULL
     );
+
+-- CMSユーザ
+-- パスワードはsha256でハッシュ化
+-- '53a323910d6acb126eadc61d22e9f952678dfb86c2f0470d2aa0dbddd284e67a' : passa000001
+-- '812a92c499257abe0ed680320947615a3525e80dba71e3a574ebe6d71b8a0044' : passb000001
+-- '14ddfecd8f974f8dc998e070d6dbaf069b6474a7f9e9145a309c9fe30c5d67d3' : passc000001
+INSERT INTO cms_users (
+    login_id,
+    login_password,
+    user_name,
+    user_type,
+    created_at,
+    updated_at
+) VALUES
+    ('A000001', '53a323910d6acb126eadc61d22e9f952678dfb86c2f0470d2aa0dbddd284e67a', '山本 美穂', 'admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('B000001', '812a92c499257abe0ed680320947615a3525e80dba71e3a574ebe6d71b8a0044', '鈴木 一郎', 'editor', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('C000001', '14ddfecd8f974f8dc998e070d6dbaf069b6474a7f9e9145a309c9fe30c5d67d3', '中村 大輔', 'operator', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.sql import text
 import datetime
 import json
+import hashlib
 from pathlib import Path
 from database_connecter import engine
 
@@ -187,6 +188,77 @@ def get_notifications(request: Request, notification_id: int):
 
     response = templates.TemplateResponse(
         "notification_detail.html", {'request': request, 'notification': notification})
+    return response
+
+
+@router.get("/web/cookie", response_class=HTMLResponse)
+def get_cookie(request: Request):
+
+    last_access_datetime = "なし"
+    if request.cookies.get('last_access_datetime'):
+        last_access_datetime = request.cookies.get('last_access_datetime')
+
+    html = f"""
+            <html>
+                <head>
+                    <title>Cookie確認</title>
+                </head>
+                <body>
+                    <p>前回アクセス日時 {last_access_datetime} </p>
+                </body>
+            </html>
+            """
+    response = HTMLResponse(content=html)
+
+    now = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+    response.set_cookie(key="last_access_datetime", value=now, max_age=60 * 10)
+
+    return response
+
+@router.get("/web/login", response_class=HTMLResponse)
+def get_login(request: Request):
+    response = templates.TemplateResponse("login.html", {'request': request})
+
+    return response
+
+@router.post("/web/login", response_class=HTMLResponse)
+def post_login(
+    request: Request,
+    login_id: str = Form(...),
+    login_password: str = Form(...),
+):
+    hash_login_password = hashlib.sha256(login_password.encode()).hexdigest()
+
+    sql = """
+          SELECT id,
+                 user_name,
+                 user_type
+          FROM cms_users
+          WHERE login_id = :login_id
+            and login_password = :login_password \
+          """
+
+    with engine.begin() as conn:
+        rs = conn.execute(text(sql), {'login_id': login_id, 'login_password': hash_login_password})
+
+        row = rs.fetchone()
+        if row:
+            login_user = dict(row._mapping)
+        else:
+            return templates.TemplateResponse("login.html",
+                                              {
+                                                  'request': request,
+                                                  'error_message': 'ログインIDまたはパスワードが正しくありません'
+                                              },
+                                              status_code=200)
+
+    response = templates.TemplateResponse("login_after.html",
+                                          {
+                                              'request': request,
+                                              'login_user': login_user
+                                           },
+                                          status_code=200)
+
     return response
 
 

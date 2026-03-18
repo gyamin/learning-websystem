@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS user_point_amounts;
 DROP TABLE IF EXISTS notification_user_read_status;
 DROP TABLE IF EXISTS notifications;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS cms_users;
 
 -- ユーザ
 CREATE TABLE IF NOT EXISTS users
@@ -100,3 +101,23 @@ COMMENT ON COLUMN user_point_amounts.user_id IS 'ユーザID';
 COMMENT ON COLUMN user_point_amounts.point_amount IS 'ポイント残高';
 COMMENT ON COLUMN user_point_amounts.created_at IS '登録日時';
 COMMENT ON COLUMN user_point_amounts.updated_at IS '更新日時';
+
+-- CMSユーザ
+CREATE TABLE IF NOT EXISTS cms_users
+(
+    id             bigserial PRIMARY KEY,
+    login_id       varchar(50) UNIQUE                    NOT NULL,
+    login_password varchar(255)                          NOT NULL,
+    user_name      varchar(20)                           NOT NULL,
+    user_type      varchar(10) DEFAULT NULL,
+    created_at     timestamp   DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at     timestamp   DEFAULT NULL
+);
+COMMENT ON TABLE cms_users IS 'CMSユーザ';
+COMMENT ON COLUMN cms_users.id IS 'CMSユーザID';
+COMMENT ON COLUMN cms_users.login_id IS 'ログインID';
+COMMENT ON COLUMN cms_users.login_password IS 'ログインパスワード';
+COMMENT ON COLUMN cms_users.user_name IS 'ユーザ名';
+COMMENT ON COLUMN cms_users.user_type IS 'ユーザ種別';
+COMMENT ON COLUMN cms_users.created_at IS '登録日時';
+COMMENT ON COLUMN cms_users.updated_at IS '更新日時';

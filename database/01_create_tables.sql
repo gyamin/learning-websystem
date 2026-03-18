@@ -110,6 +110,7 @@ CREATE TABLE IF NOT EXISTS cms_users
     login_password varchar(255)                          NOT NULL,
     user_name      varchar(20)                           NOT NULL,
     user_type      varchar(10) DEFAULT NULL,
+    session_id     varchar(255) DEFAULT NULL,
     created_at     timestamp   DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at     timestamp   DEFAULT NULL
 );
@@ -119,5 +120,6 @@ COMMENT ON COLUMN cms_users.login_id IS 'ログインID';
 COMMENT ON COLUMN cms_users.login_password IS 'ログインパスワード';
 COMMENT ON COLUMN cms_users.user_name IS 'ユーザ名';
 COMMENT ON COLUMN cms_users.user_type IS 'ユーザ種別';
+COMMENT ON COLUMN cms_users.session_id IS 'セッションID';
 COMMENT ON COLUMN cms_users.created_at IS '登録日時';
 COMMENT ON COLUMN cms_users.updated_at IS '更新日時';

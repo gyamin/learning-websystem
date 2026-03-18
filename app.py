@@ -1,3 +1,5 @@
+import uuid
+
 from fastapi import FastAPI, Request, APIRouter, Form
 from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -227,8 +229,10 @@ def post_login(
     login_id: str = Form(...),
     login_password: str = Form(...),
 ):
+    # リクエスト.login_passwordをハッシュ化
     hash_login_password = hashlib.sha256(login_password.encode()).hexdigest()
 
+    # cms_usersテーブルから、login_id、login_password(ハッシュ値)で検索
     sql = """
           SELECT id,
                  user_name,
@@ -240,26 +244,58 @@ def post_login(
 
     with engine.begin() as conn:
         rs = conn.execute(text(sql), {'login_id': login_id, 'login_password': hash_login_password})
-
         row = rs.fetchone()
-        if row:
-            login_user = dict(row._mapping)
-        else:
-            return templates.TemplateResponse("login.html",
-                                              {
-                                                  'request': request,
-                                                  'error_message': 'ログインIDまたはパスワードが正しくありません'
-                                              },
-                                              status_code=200)
 
-    response = templates.TemplateResponse("login_after.html",
+    if row:
+        login_user = dict(row._mapping)
+        response = templates.TemplateResponse("login_after.html",
+                                              {'request': request,'login_user': login_user},
+                                              status_code=200)
+        # CookieにセッションIDを設定
+        session_id = uuid.uuid4().hex
+        session_valid_seconds = 60 * 15 # 15分
+        response.set_cookie(key="session_id", value=session_id, max_age=session_valid_seconds)
+
+        # DBにセッションIDを保管
+        sql = """
+        UPDATE cms_users SET session_id = :session_id WHERE id = :id
+        """
+        with engine.begin() as conn:
+            conn.execute(text(sql), {'session_id': session_id, 'id': login_user['id']})
+
+    else:
+        response = templates.TemplateResponse("login.html",
                                           {
                                               'request': request,
-                                              'login_user': login_user
-                                           },
+                                              'error_message': 'ログインIDまたはパスワードが正しくありません'
+                                          },
                                           status_code=200)
 
     return response
 
 
+@router.get("/web/home", response_class=HTMLResponse)
+def get_top(request: Request):
+
+    # session_idからログインユーザを特定
+    session_id = request.cookies.get('session_id')
+    sql = """
+          SELECT id,
+                 user_name,
+                 user_type
+          FROM cms_users
+          WHERE session_id = :session_id
+          """
+
+    with engine.begin() as conn:
+        rs = conn.execute(text(sql), {'session_id': session_id})
+        row = rs.fetchone()
+
+    if row:
+        login_user = dict(row._mapping)
+        response = templates.TemplateResponse("home.html", {'request': request, 'login_user': login_user})
+    else:
+        response = RedirectResponse(url="/web/login")
+
+    return response
 app.include_router(router)

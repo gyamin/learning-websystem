@@ -2,15 +2,23 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>ログイン済み</title>
+  <title>ホーム</title>
 </head>
 <body>
-  <div class="login-container">
-    <h1>ログイン成功</h1>
-    <div class="login-card">
-      <p class="success-message">ログインが成功しました</p>
-      <p class="login-user">ログインユーザー: <span>{{ login_user['user_name'] }}</span></p>
-      <a href="/web/top" class="link-button">トップページへ</a>
+  <div class="home-container">
+    <h1>ホーム画面</h1>
+    <div class="home-card">
+      <p class="user-name">{{ login_user['user_name'] }}</p>
+
+      {% if login_user['user_type'] == 'admin' %}
+        <p class="user-role">管理者</p>
+      {% elif login_user['user_type'] == 'editor' %}
+        <p class="user-role">編集者</p>
+      {% elif login_user['user_type'] == 'operator' %}
+        <p class="user-role">運用者</p>
+      {% else %}
+        <p class="user-role">不明なユーザー</p>
+      {% endif %}
     </div>
   </div>
 </body>
@@ -26,7 +34,7 @@
       color: #333;
   }
 
-  .login-container {
+  .home-container {
       width: 100%;
       max-width: 420px;
       padding: 24px;
@@ -40,7 +48,7 @@
       color: #1f2937;
   }
 
-  .login-card {
+  .home-card {
       background-color: #ffffff;
       padding: 32px 28px;
       border-radius: 12px;
@@ -48,42 +56,24 @@
       text-align: center;
   }
 
-  .success-message {
-      margin: 0 0 16px;
+  .user-name {
+      margin: 0 0 12px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #1f2937;
+  }
+
+  .user-role {
+      margin: 0 0 12px;
       font-size: 16px;
       font-weight: 600;
       color: #2563eb;
   }
 
-  .login-user {
-      margin: 0 0 24px;
-      font-size: 15px;
-      color: #374151;
-  }
-
-  .login-user span {
-      font-weight: 700;
-      color: #1f2937;
-  }
-
-  .link-button {
-      display: inline-block;
-      padding: 12px 20px;
-      font-size: 15px;
-      font-weight: 700;
-      color: #ffffff;
-      background-color: #2563eb;
-      text-decoration: none;
-      border-radius: 8px;
-      transition: background-color 0.2s, transform 0.1s;
-  }
-
-  .link-button:hover {
-      background-color: #1d4ed8;
-  }
-
-  .link-button:active {
-      transform: translateY(1px);
+  .user-type {
+      margin: 0;
+      font-size: 14px;
+      color: #6b7280;
   }
 </style>
 </html>

@@ -5,20 +5,16 @@ services:
       dockerfile: ./containers/nginx/Dockerfile
     container_name: lw_nginx
     restart: always
-    expose:
-      - "80"
-    networks:
-      - common_net
+    ports:
+      - "80:80"
   lw_fastapi:
     build:
       context: .
       dockerfile: ./containers/fastapi/Dockerfile
     container_name: lw_fastapi
     restart: always
-    expose:
-      - "8000"
-    networks:
-      - common_net
+    ports:
+      - "8000:8000"
     depends_on:
       - lw_postgres
   lw_postgres:
@@ -32,9 +28,3 @@ services:
       TZ: "Asia/Tokyo"
     ports:
       - "15450:5432"
-    networks:
-      - common_net
-
-networks:
-  common_net:
-    external: true

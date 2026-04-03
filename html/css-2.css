@@ -1,0 +1,46 @@
+body {
+    color: #333;
+    font-family: "メイリオ", Meiryo, "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "游ゴシック", YuGothic, "ＭＳ Ｐゴシック", "MS PGothic", Helvetica, Arial, sans-serif;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    letter-spacing: .02em;
+    font-weight: 500;
+}
+
+main {
+    max-width: 1000px;
+    margin: 20px;
+}
+
+h1 {
+    font-size: 2em;
+    color: #333333;
+    border-radius: 10px;
+    background-color: salmon;
+    padding: 8px;
+}
+
+h2 {
+    font-size: 1.8em;
+    color: #333333;
+    padding: 8px;
+    border-bottom: 2px solid salmon;
+}
+
+h3 {
+    font-size: 1.6em;
+    color: #333333;
+    padding: 4px;
+    border-bottom: 2px solid salmon;
+}
+
+table {
+    border-collapse: collapse;
+    border: 2px solid black;
+}
+
+table th,
+table td {
+    border: 1px dashed gray;
+}
+

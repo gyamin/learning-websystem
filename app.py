@@ -161,7 +161,6 @@ def get_notifications2(request: Request, title: str | None = None):
 
 @router.get("/web/notification/{notification_id}", response_class=HTMLResponse)
 def get_notifications(request: Request, notification_id: int):
-    notification = {}
 
     sql = """
         SELECT 
@@ -178,15 +177,15 @@ def get_notifications(request: Request, notification_id: int):
 
     with engine.begin() as conn:
         rs = conn.execute(text(sql), {'notification_id': notification_id})
-
         row = rs.fetchone()
-        if row:
-            notification = dict( row._mapping)
-        else:
-            return templates.TemplateResponse("error_404.html", {'request': request}, status_code=404)
 
-    response = templates.TemplateResponse(
-        "notification_detail.html", {'request': request, 'notification': notification})
+    if row:
+        notification = dict( row._mapping)
+        response = templates.TemplateResponse(
+            "notification_detail.html", {'request': request, 'notification': notification})
+    else:
+        response = templates.TemplateResponse("error_404.html", {'request': request}, status_code=404)
+
     return response
 
 

@@ -18,7 +18,7 @@
         {% for notification in notifications %}
         <tr>
             <td>{{ notification.notification_status }}</td>
-            <td>{{ notification.title }}</td>
+            <td><a href="/web/notification/{{ notification.id }}">{{ notification.title }}</a></td>
             <td>{{ notification.publication_start_date }}</td>
             <td>{{ notification.publication_end_date }}</td>
             <td>{{ notification.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>

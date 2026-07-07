@@ -117,7 +117,8 @@ def get_notifications(request: Request):
     notifications = []
 
     sql = """
-          SELECT notification_status,
+          SELECT id,
+                 notification_status,
                  title,
                  publication_start_date,
                  publication_end_date,
